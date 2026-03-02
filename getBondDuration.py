@@ -1,3 +1,4 @@
+import numpy as np
 def getBondDuration(y, face, couponRate, m, ppy=1):
     periodic_yield = y / ppy
     periodic_coupon = (face * couponRate) / ppy
