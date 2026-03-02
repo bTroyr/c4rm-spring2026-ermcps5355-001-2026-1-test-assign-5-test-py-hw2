@@ -1,27 +1,16 @@
-def getBondDuration(market_rate, face_value, coupon_rate, years, freq):
-    def get_bond_price(r, fv, cr, y, fr):
-        pr = r / fr
-        tp = y * fr
-        pc = fv * cr / fr
-        if pr == 0:
-            pva = tp * pc
-        else:
-            pva = pc * (1 - (1 + pr)**-tp) / pr
-        pvf = fv / (1 + pr)**tp
-        return pva + pvf
+def getBondDuration(y, face, couponRate, m, ppy=1):
+    periodic_yield = y / ppy
+    periodic_coupon = (face * couponRate) / ppy
+    total_periods = m * ppy
     
-    periodic_rate = market_rate / freq
-    total_periods = years * freq
-    periodic_coupon = face_value * coupon_rate / freq
-    bond_price = get_bond_price(market_rate, face_value, coupon_rate, years, freq)
+    t = np.arange(1, total_periods + 1)
     
-    if periodic_rate == 0:
-        sum_t_cf = (total_periods * (total_periods + 1) / 2) * periodic_coupon + total_periods * face_value
-        duration = sum_t_cf / (total_periods * periodic_coupon + face_value)
-    else:
-        annuity_part = periodic_coupon * (1 - (1 + periodic_rate)**-total_periods - total_periods * periodic_rate * (1 + periodic_rate)**-total_periods) / (periodic_rate**2)
-        face_part = total_periods * face_value / (1 + periodic_rate)**total_periods
-        duration = (annuity_part + face_part) / bond_price
-        duration = duration / freq
+    cf = np.full(total_periods, periodic_coupon)
+    cf[-1] += face
+    
+    pvcf = cf / (1 + periodic_yield)**t 
+    bond_price = np.sum(pvcf)
+    w = pvcf / bond_price
+    duration = np.sum(w * t) / ppy
     
     return duration
