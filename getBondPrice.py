@@ -1,16 +1,20 @@
-import numpy as np
-
 def getBondPrice(y, face, couponRate, m, ppy=1):
-    r = y / ppy
-    c = (face * couponRate) / ppy
-    n = m * ppy
-    
-    periods = np.arange(1, n + 1)
-    
-    coupon_pvs = c / (1 + r)**periods
-    
-    face_pv = face / (1 + r)**n
-    
-    bond_price = np.sum(coupon_pvs) + face_pv
-    
-    return bond_price
+
+    N = int(round(m * ppy)) 
+    per_rate = y / ppy       
+    coupon_per_period = face * couponRate / ppy 
+
+    if N == 0:
+        return float(face)
+
+    if per_rate == 0:
+        pv_coupons = coupon_per_period * N
+        pv_face = face
+    else:
+        discount_factor_N = (1.0 + per_rate) ** (-N)
+        annuity_factor = (1.0 - discount_factor_N) / per_rate
+        pv_coupons = coupon_per_period * annuity_factor
+        pv_face = face * discount_factor_N
+
+    price = pv_coupons + pv_face
+    return float(price)
