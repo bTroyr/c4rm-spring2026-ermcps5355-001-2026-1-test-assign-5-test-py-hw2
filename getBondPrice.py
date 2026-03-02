@@ -15,4 +15,4 @@ def getBondPrice(y, face, couponRate, m, ppy=1):
         pv = cash_flow / (1 + rate_per_period) ** period
         bond_price += pv
     
-    return round(bond_price, 6)
+    return(bond_price)

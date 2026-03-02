@@ -1,4 +1,4 @@
-def getBondDuration(y, face, couponRate, m, ppy=1):
+def getBondDuration(y, face, couponRate, m, ppy = 1):
 
     rate_per_period = y / ppy          
     coupon_per_period = face * couponRate / ppy  
@@ -19,4 +19,4 @@ def getBondDuration(y, face, couponRate, m, ppy=1):
     
     duration = weighted_pvcf / total_pvcf
     
-    return round(duration, 2)
+    return(duration)

@@ -1,15 +1,12 @@
 def FizzBuzz(start, finish):
-
-    result = []
-    
-    for num in range(start, finish + 1):
-        if num % 3 == 0 and num % 5 == 0:
-            result.append("fizzbuzz")
-        elif num % 3 == 0:
-            result.append("fizz")
-        elif num % 5 == 0:
-            result.append("buzz")
+    outlist = []
+    for n in range(start, finish + 1):
+        if n % 15 == 0:
+            outlist.append("fizzbuzz")
+        elif n % 3 == 0:
+            outlist.append("fizz")
+        elif n % 5 == 0:
+            outlist.append("buzz")
         else:
-            result.append(num)
-    
-    return result
+            outlist.append(n)
+    return(outlist)
