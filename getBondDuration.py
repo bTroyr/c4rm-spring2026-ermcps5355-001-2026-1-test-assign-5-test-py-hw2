@@ -1,22 +1,27 @@
-def getBondDuration(y, face, couponRate, m, ppy = 1):
-
-    rate_per_period = y / ppy          
-    coupon_per_period = face * couponRate / ppy  
-    total_periods = m * ppy          
-    total_pvcf = 0.0                
-    weighted_pvcf = 0.0             
-    
-    for period in range(1, total_periods + 1):
-        if period < total_periods:
-            cash_flow = coupon_per_period
+def getBondDuration(market_rate, face_value, coupon_rate, years, freq):
+    def get_bond_price(r, fv, cr, y, fr):
+        pr = r / fr
+        tp = y * fr
+        pc = fv * cr / fr
+        if pr == 0:
+            pva = tp * pc
         else:
-            cash_flow = coupon_per_period + face
-        
-        pvcf = cash_flow / (1 + rate_per_period) ** period
-        
-        total_pvcf += pvcf
-        weighted_pvcf += pvcf * period
+            pva = pc * (1 - (1 + pr)**-tp) / pr
+        pvf = fv / (1 + pr)**tp
+        return pva + pvf
     
-    duration = weighted_pvcf / total_pvcf
+    periodic_rate = market_rate / freq
+    total_periods = years * freq
+    periodic_coupon = face_value * coupon_rate / freq
+    bond_price = get_bond_price(market_rate, face_value, coupon_rate, years, freq)
     
-    return(duration)
+    if periodic_rate == 0:
+        sum_t_cf = (total_periods * (total_periods + 1) / 2) * periodic_coupon + total_periods * face_value
+        duration = sum_t_cf / (total_periods * periodic_coupon + face_value)
+    else:
+        annuity_part = periodic_coupon * (1 - (1 + periodic_rate)**-total_periods - total_periods * periodic_rate * (1 + periodic_rate)**-total_periods) / (periodic_rate**2)
+        face_part = total_periods * face_value / (1 + periodic_rate)**total_periods
+        duration = (annuity_part + face_part) / bond_price
+        duration = duration / freq
+    
+    return duration

@@ -1,18 +1,14 @@
-def getBondPrice(y, face, couponRate, m, ppy=1):
-   
-    rate_per_period = y / ppy         
-    coupon_per_period = face * couponRate / ppy  
-    total_periods = m * ppy          
+def getBondPrice(market_rate, face_value, coupon_rate, years, freq):
+    periodic_rate = market_rate / freq
+    total_periods = years * freq
+    periodic_coupon = face_value * coupon_rate / freq
     
-    bond_price = 0.0
+    if periodic_rate == 0:
+        pv_annuity = total_periods * periodic_coupon
+    else:
+        pv_annuity = periodic_coupon * (1 - (1 + periodic_rate)**-total_periods) / periodic_rate
+
+    pv_face = face_value / (1 + periodic_rate)**total_periods
+    bond_price = pv_annuity + pv_face
     
-    for period in range(1, total_periods + 1):
-        if period < total_periods:
-            cash_flow = coupon_per_period  
-        else:
-            cash_flow = coupon_per_period + face 
-            
-        pv = cash_flow / (1 + rate_per_period) ** period
-        bond_price += pv
-    
-    return(bond_price)
+    return bond_price
